@@ -1,0 +1,27 @@
+【求助】StretchBlt在Dialog上显示图片出现无法多次显示的问题
+发送 QQ 消息给 wxjgeorge  wxjgeorge 当前在线  添加 wxjgeorge 的声望  反映此帖
+使用下面的函数进行Dialog上显示BMP图片,是一个循环内重复调用4次,分别在不同的位置显示4个不同的图片,但是很郁闷的是只有第一个图片能显示出来,其它三个都没显示.请各位帮看看.
+代码:
+ 
+bool MyDrawBitmap(HWND hWnd,char * filename,int x,int y)
+{
+ HBITMAP MyBitmap,OldBitmap;
+ HDC hdc;
+ HDC mdc;
+ PAINTSTRUCT ps;
+ BITMAP bit;
+ int bx,by;
+ hdc=BeginPaint(hWnd,&ps);
+ mdc=CreateCompatibleDC(NULL);
+ MyBitmap=(HBITMAP)LoadImageA(NULL,filename,IMAGE_BITMAP,0,0,LR_LOADFROMFILE);
+ OldBitmap=(HBITMAP)SelectObject(mdc,MyBitmap);
+ GetObject(MyBitmap,sizeof(BITMAP),&bit);
+ bx=bit.bmWidth;
+ by=bit.bmHeight;
+ StretchBlt(hdc,x,y,bx,by,mdc,0,0,bx,by,SRCCOPY);
+ SelectObject(mdc,OldBitmap);
+ DeleteObject(MyBitmap);
+ DeleteDC(mdc);
+ EndPaint(hWnd,&ps);
+ return true;
+}
